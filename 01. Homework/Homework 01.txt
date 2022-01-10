@@ -1,0 +1,35 @@
+Questions
+
+- What is VM's ip address?
+* Each VM may have one or more of the following IP addresses:
+	* From the internet is Public IP address,
+	* From a non-NAT source is Primary IP address and Secondary IP address,
+	* From a private network NAT source is NAT Private Network IP address,
+	* From an ICNR NAT source is NAT ICNR IP address
+
+
+- What is HOST machine IP address?
+* The physical address of a computer in a network.
+  On the Internet, a host address is the IP address of the machine.
+  See IP address and hostname.
+
+
+- Which IP address is used when VM is communicating with the outside world (Internet)?
+* Public IP Address.
+
+
+- Which IP address is used when HOST is communicating with the outside world (Internet)?
+* Public IP Address.
+
+
+- Are VM and HOST in the same subnet?
+* Yes you can assign them to the same subnet but not for all services.
+  VMs can be created in the same VNet and they can connect to each other using private IP addresses.
+  They can connect even if they are in different subnets without the need to configure a gateway or use public IP addresses.
+
+
+- Install VirtualBox
+- Create NAT network
+- Download Xubuntu
+- Create two Xubuntu VM attached to the NAT network you created
+- Show network communication between VMS
