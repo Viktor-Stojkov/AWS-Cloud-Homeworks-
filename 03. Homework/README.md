@@ -1,3 +1,1 @@
-Installed Mobile authentication, Created MFA and setup for User Virtual,  Created Administrators Group and added Viktor-Administrators Users with Policies Administrators (918 Policies) and connected Viktor-Administrators User to Administrators Group
-
-<img src="../Desktop/Viktor Folder/02. IW Conect - AWS Cloud Mentorship/IW Connect - AWS Cloud Homeworks/AWS-Cloud-Homeworks-/03. Homework/6 login numbers from the installed Google Authenticator Mobile application.png" alt="Description for Local Images">
+**Installed Mobile authentication, Created MFA and setup for User Virtual,  Created Administrators Group and added Viktor-Administrators Users with Policies Administrators (918 Policies) and connected Viktor-Administrators User to Administrators Group**
