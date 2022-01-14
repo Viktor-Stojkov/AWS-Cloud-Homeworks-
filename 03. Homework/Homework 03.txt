@@ -1,0 +1,5 @@
+Install Authnticator app on your phone
+Setup MFA for root user
+Create administrators group and add Administrator policy to the group
+Create administrator user and add it to Administrators group
+Create MFA for administrator user
