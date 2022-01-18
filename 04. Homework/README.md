@@ -6,3 +6,5 @@
 ![alt text](https://github.com/Viktor-Stojkov/AWS-Cloud-Homeworks-IWConnect/blob/main/04.%20Homework/03.%20Internet%20Gateway.png?raw=true)
 ![alt text](https://github.com/Viktor-Stojkov/AWS-Cloud-Homeworks-IWConnect/blob/main/04.%20Homework/04.%20Route%20Table.png?raw=true)
 ![alt text](https://github.com/Viktor-Stojkov/AWS-Cloud-Homeworks-IWConnect/blob/main/04.%20Homework/05.%20CloudFormation.png?raw=true)
+
+https://raw.githubusercontent.com/Viktor-Stojkov/AWS-Cloud-Homeworks-IWConnect/main/04.%20Homework/vpc.yml
