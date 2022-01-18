@@ -1,0 +1,2 @@
+**On the AWS platform I created Virtual Private Code with VPC, Subnet, Internet Gateway & Route Table dynamically**
+
