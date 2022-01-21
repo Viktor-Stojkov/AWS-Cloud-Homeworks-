@@ -1,0 +1,145 @@
+# Homework 04
+
+AWSTemplateFormatVersion: "2010-09-09"
+
+Resources:
+  studentViktorVPC: # Created VPC
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.1.0.0/16
+      Tags:
+        - Key: Name
+          Value: studentViktorVPC
+
+  viktorPrivateSubnet: # Created Private Subnet and Referenced to the created VPC
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.1.1.0/24
+      VpcId: !Ref studentViktorVPC
+      Tags:
+        - Key: Name
+          Value: viktorPrivateSubnet
+
+  viktorPublicSubnet: # Created Public Subnet and Referenced to the created VPC
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.1.2.0/24
+      VpcId: !Ref studentViktorVPC
+      Tags:
+        - Key: Name
+          Value: viktorPublicSubnet
+
+  viktorInternetGateWay: # Created Internet Gate Way
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: viktorInternetGateWay
+
+  viktorInternetGateWayAttachment: # Create IGW Attachment Referenced to the created viktorInternetGateWay and add a Reference to the VPC
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref viktorInternetGateWay # After Update from CloudFormation the State of IGW is changed from Detached to Attached
+      VpcId: !Ref studentViktorVPC
+
+  viktorPublicRouteTable: # Create Route Table Referenced to the VPC
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref studentViktorVPC
+      Tags: # We can create so many props (Tags) with Key and Value
+        - Key: Name
+          Value: viktorPublicRouteTable
+        - Key: Type
+          Value: movieTypeRouteTable
+        - Key: States
+          Value: selectionOfCountries
+
+  viktorRouteTableGateWayRoute: # Create Route Table gate Way Route Routed to IGW and RT, so in destination Routes the prop Target now have unspecified address
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0 # Set unspecified address
+      GatewayId: !Ref viktorInternetGateWay
+      RouteTableId: !Ref viktorPublicRouteTable
+
+  viktorPublicRouteSubnetAsociation: # Create Public Route Subnet Asociation Referenced to RT and PS
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref viktorPublicRouteTable # Now we have output network in Route Tables / Subnet associations
+      SubnetId: !Ref viktorPublicSubnet
+
+  # Homework 05
+
+  # Create NAT Instance from VS Code
+
+  viktorNATInstance:
+    Type: AWS::EC2::Instance # Create NAT Instance
+    Properties:
+      ImageId: ami-00a36856283d67c39 # from Create Intefrace in search type "nat" and choice AMIs, select the first package wtih this Instance ID
+      InstanceType: t2.micro # Select FREE TIER
+      KeyName: viktor # This is the Key
+      SourceDestCheck: false
+      SubnetId: !Ref viktorPublicSubnet # The Instance will be Referenced to the PublicSubnet Network
+      Tags:
+        - Key: Name
+          Value: NAT Instance # The name of our first Instance
+
+  # We should to Instal and Download Key, then should to Launch the Package "ami-00a36856283d67c39", select the Free Version and the Instaled Key. and LAUNCH
+  # So now we have Instance with Open Address (external output address)
+
+  NATElasticIP:
+    Type: AWS::EC2::EIP # Create Elastic IP for external output with WWW (The World Wide Web)
+    Properties:
+      InstanceId: !Ref viktorNATInstance # Elastic IP should be Referenced to the NAT Instance, so now we have "Open Communication Network"
+      Tags:
+        - Key: Name
+          Value: NAT Elastic IP
+
+  viktorPrivateNATRouteTable: # Create Private NAT Route Table
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref studentViktorVPC # Create viktorPrivateNATRouteTable and (Referenced) insert it in this Route
+      Tags:
+        - Key: Name
+          Value: viktorPrivateNATRouteTable
+
+  viktorPrivateRouteTableNATRoute: # Create Private Route Table NAT Route
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0 # external output
+      InstanceId: !Ref viktorNATInstance # Create viktorPrivateRouteTableNATRoute and (Referenced) insert it in viktorPrivateNATRouteTable from this Instance ****IMPORT****
+      RouteTableId: !Ref viktorPrivateNATRouteTable # Create viktorPrivateRouteTableNATRoute and (Referenced) insert it in this Route
+
+  viktorPrivateNATRouteSubnetAsociation: # Create Private Route Subnet Asociation
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref viktorPrivateNATRouteTable # We like to Asociation viktorPrivateNATRouteSubnetAsociation to the viktorPrivateNATRouteTable (Referenced)
+      SubnetId: !Ref viktorPrivateSubnet
+
+  # Now we have Private Route Table
+  # We can now access from WWW to the Public Network, from Public network to the Private NATRoute
+
+  viktorPublicEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-08e4e35cccc6189f4
+      InstanceType: t2.micro
+      KeyName: viktor
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          SubnetId:
+            Ref: viktorPublicSubnet
+      Tags:
+        - Key: Name
+          Value: Public EC2 Instance
+
+  viktorPrivateEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-08e4e35cccc6189f4
+      InstanceType: t2.micro
+      SubnetId: !Ref viktorPrivateSubnet
+      KeyName: viktor
+      Tags:
+        - Key: Name
+          Value: Private EC2 Instance
